@@ -7,7 +7,7 @@ export const HeroSection = () => {
           <h3 className="hero__subtitle">Where the possibilities are </h3>
           <button className="button hero__button">Learn more</button>
         </div>
-        <img src={'/images/EARTH.png'} className="hero__img" />
+        <img src={'/images/EARTH.webp'} className="hero__img" />
       </div>
     </section>
   );
