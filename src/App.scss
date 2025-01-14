@@ -1,0 +1,650 @@
+@use 'sass:math';
+
+$pink: #ff70d9;
+$yellow: #ebff00;
+$dark_blue: #304571;
+$black: #000000;
+$white: #ffffff;
+
+$gradient_hover: linear-gradient(98.25deg, #ebff00 18.56%, #ff70d9 76.02%);
+
+$viewport_desktop: 1248px;
+$viewport_laptop: 768px;
+$viewport_mobile: 360px;
+
+$viewport: $viewport_desktop !default;
+
+@function to_vw($px) {
+  @return math.div(math.round(math.div($px * 100vw, $viewport) * 10000), 10000);
+}
+
+@mixin laptop {
+  $viewport: $viewport_laptop !global;
+
+  @media (max-width: $viewport_laptop) {
+    @content;
+  }
+
+  $viewport: $viewport_desktop !global;
+}
+
+@mixin mobile {
+  $viewport: $viewport_mobile !global;
+
+  @media (max-width: $viewport_mobile) {
+    @content;
+  }
+
+  $viewport: $viewport_desktop !global;
+}
+
+@mixin text($f-w, $f-sz, $l-h) {
+  font-weight: $f-w;
+  font-size: to_vw($f-sz);
+  line-height: to_vw($l-h);
+}
+
+.container {
+  width: to_vw(1088px);
+  margin: 0 auto;
+
+  @include laptop {
+    width: to_vw(709px);
+  }
+
+  @include mobile {
+    width: to_vw(320px);
+  }
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  padding-top: to_vw(58px);
+  padding-bottom: to_vw(60px);
+  background: linear-gradient(196.2deg, #0d1e48 0%, #304571 100%);
+
+  @include laptop {
+    padding-top: to_vw(55px);
+    padding-bottom: to_vw(53px);
+  }
+
+  @include mobile {
+    padding: to_vw(50px) 0;
+  }
+}
+
+.button {
+  @include text(700, 22px, 26px);
+
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: to_vw(100px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease-out;
+  background: $yellow;
+  color: $black;
+
+  &--outlined {
+    background: transparent;
+    border: 2px solid $yellow;
+    color: $yellow;
+  }
+
+  &:hover {
+    opacity: 60%;
+  }
+
+  @include laptop {
+    @include text(700, 16px, 19px);
+    border-radius: to_vw(100px);
+  }
+
+  @include mobile {
+    @include text(700, 16px, 19px);
+    border-radius: to_vw(100px);
+  }
+}
+
+.title {
+  @include text(800, 32px, 38px);
+  color: $white;
+
+  @include laptop {
+    width: 100%;
+    @include text(800, 24px, 29px);
+  }
+
+  @include mobile {
+    @include text(800, 18px, 22px);
+  }
+}
+
+.header {
+  width: 100%;
+  height: to_vw(80px);
+  background-color: $black;
+
+  @include laptop {
+    height: to_vw(80px);
+  }
+
+  @include mobile {
+    height: to_vw(48px);
+  }
+
+  &__content {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    @include mobile {
+      overflow: hidden;
+    }
+  }
+
+  &__logo {
+    width: to_vw(104px);
+    height: auto;
+
+    @include laptop {
+      width: to_vw(71px);
+    }
+
+    @include mobile {
+      width: to_vw(71px);
+    }
+  }
+
+  &__links {
+    display: flex;
+    gap: to_vw(56px);
+
+    @include laptop {
+      gap: to_vw(30px);
+    }
+
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__burger {
+    display: none;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    flex-direction: column;
+    justify-content: center;
+
+    @include mobile {
+      display: flex;
+      width: to_vw(30px);
+      height: to_vw(30px);
+      gap: to_vw(8px);
+
+      & span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        border-radius: 2px;
+        background-color: $white;
+        transition:
+          transform 0.3s,
+          opacity 0.3s;
+      }
+    }
+  }
+
+  &__toggle {
+    display: none;
+  }
+
+  &__toggle:checked + &__burger span {
+    &:nth-child(1) {
+      transform: translateY(9px) rotate(30deg);
+    }
+    &:nth-child(2) {
+      opacity: 0;
+    }
+    &:nth-child(3) {
+      transform: translateY(-10px) rotate(-30deg);
+    }
+  }
+
+  &__menu {
+    display: none;
+    position: absolute;
+    z-index: 50;
+    background: $black;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+
+    @include mobile {
+      display: block;
+      height: 100%;
+      width: to_vw(200px);
+      top: to_vw(48px);
+      transform: translatex(200%);
+      right: 0;
+
+      & > ul {
+        list-style: none;
+        margin: 0;
+        padding: to_vw(10px) 0;
+
+        & > li {
+          margin: to_vw(10px) 0;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  &__toggle:checked ~ &__menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translatex(0%);
+  }
+
+  &__link {
+    @include text(700, 18px, 22px);
+    background-color: $white;
+    text-decoration: none;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    &-icon {
+      width: to_vw(24px);
+      height: auto;
+
+      @include laptop {
+        width: to_vw(24px);
+      }
+
+      @include mobile {
+        width: to_vw(24px);
+      }
+
+      &:hover > path {
+        fill: url(#hover-gradient);
+      }
+    }
+
+    &:hover {
+      background: $gradient_hover;
+      -webkit-background-clip: text;
+    }
+
+    @include laptop {
+      @include text(700, 18px, 22px);
+    }
+
+    @include mobile {
+      @include text(700, 18px, 22px);
+      text-align: center;
+    }
+  }
+}
+
+.hero {
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0) -0.52%, rgba(15, 20, 32, 0.79) 99.48%),
+    url('./assets/images/hero.png');
+  background-size: 100%, cover;
+  background-position:
+    center center,
+    left bottom;
+  background-blend-mode: overlay;
+  height: to_vw(490px);
+
+  @include laptop {
+    height: to_vw(420px);
+  }
+
+  @include mobile {
+    height: to_vw(451px);
+    overflow: hidden;
+  }
+
+  &__content {
+    display: flex;
+
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: to_vw(22px);
+    margin-top: to_vw(91px);
+
+    @include laptop {
+      gap: to_vw(22px);
+      margin-top: to_vw(100px);
+    }
+
+    @include mobile {
+      gap: to_vw(17px);
+      order: 1;
+      margin-top: to_vw(0px);
+      align-items: center;
+
+    }
+  }
+
+  &__title {
+    @include text(800, 72px, 72px);
+    color: $white;
+
+    @include laptop {
+      @include text(800, 48px, 48px);
+    }
+
+    @include mobile {
+      @include text(800, 36px, 36px);
+      text-align: center;
+    }
+
+    &::after {
+      content: 'space';
+      color: $pink;
+    }
+  }
+
+  &__subtitle {
+    @include text(800, 32px, 38px);
+    color: $white;
+
+    @include laptop {
+      @include text(800, 22px, 26px);
+    }
+
+    @include mobile {
+      @include text(800, 16px, 19px);
+    }
+
+    &::after {
+      content: 'endless!';
+      color: $yellow;
+    }
+  }
+
+  &__button {
+    padding: to_vw(14px) to_vw(40px);
+    max-width: max-content;
+
+    @include laptop {
+      padding: to_vw(14px) to_vw(40px);
+    }
+
+    @include mobile {
+      padding: to_vw(14px) to_vw(40px);
+    }
+  }
+
+  &__img {
+    margin-top: to_vw(59px);
+    width: to_vw(327px);
+    height: to_vw(367px);
+
+    @include laptop {
+      margin-top: to_vw(26px);
+      width: to_vw(300px);
+      height: to_vw(336px);
+      transform: translateX(to_vw(100px));
+    }
+
+    @include mobile {
+      margin-top: to_vw(-116px);
+      width: to_vw(300px);
+      height: to_vw(336px);
+      transform: translateX(0);
+    }
+  }
+}
+
+.offers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: to_vw(40px);
+
+  @include laptop {
+    gap: to_vw(30px);
+  }
+
+  @include mobile {
+    gap: to_vw(30px);
+  }
+
+  &__card {
+    height: to_vw(350px);
+    display: flex;
+    flex-direction: column;
+    gap: to_vw(22px);
+    background-size: 100%, cover;
+    background-position:
+      center center,
+      center center;
+    background-blend-mode: overlay;
+    border-radius: to_vw(10px);
+
+    @include laptop {
+      height: to_vw(350px);
+      border-radius: to_vw(10px);
+      gap: to_vw(22px);
+    }
+
+    @include mobile {
+      height: to_vw(350px);
+      border-radius: to_vw(10px);
+      gap: to_vw(22px);
+    }
+
+    &_title {
+      color: $white;
+    }
+
+    &_subtitle {
+      color: $white;
+    }
+
+    &_button {
+      padding: to_vw(14px) to_vw(40px);
+      max-width: max-content;
+
+      @include laptop {
+        padding: to_vw(7px) to_vw(40px);
+      }
+
+      @include mobile {
+        padding: to_vw(7px) to_vw(40px);
+      }
+    }
+
+    &--big &_title {
+      @include text(800, 74px, 74px);
+      width: 60%;
+
+      @include laptop {
+        width: 100%;
+        @include text(800, 40px, 40px);
+      }
+
+      @include mobile {
+        @include text(800, 40px, 40px);
+      }
+    }
+
+    &--small &_title {
+      @include text(800, 46px, 46px);
+      width: 60%;
+
+      @include laptop {
+        width: 85%;
+        @include text(800, 40px, 40px);
+      }
+
+      @include mobile {
+        @include text(800, 40px, 40px);
+      }
+    }
+
+    &--big &_subtitle {
+      @include text(800, 26px, 31px);
+
+      @include laptop {
+        @include text(800, 16px, 19px);
+      }
+
+      @include mobile {
+        @include text(800, 16px, 19px);
+      }
+    }
+
+    &--small &_subtitle {
+      @include text(800, 24px, 29px);
+
+      @include laptop {
+        @include text(800, 16px, 19px);
+      }
+
+      @include mobile {
+        @include text(800, 16px, 19px);
+      }
+    }
+
+    &--big {
+      width: 100%;
+      padding: to_vw(35px);
+
+      @include laptop {
+        width: calc(50% - to_vw(15px));
+        padding: to_vw(107px) to_vw(26px) to_vw(27px);
+      }
+
+      @include mobile {
+        width: 100%;
+        padding: to_vw(102px) to_vw(27px) to_vw(32px);
+      }
+    }
+
+    &--small {
+      width: calc((100% - (to_vw(40px))) / 2);
+      padding: to_vw(50px) to_vw(35px) to_vw(35px);
+
+      @include laptop {
+        width: calc(50% - to_vw(15px));
+        padding: to_vw(107px) to_vw(26px) to_vw(27px);
+      }
+
+      @include mobile {
+        width: 100%;
+        padding: to_vw(102px) to_vw(27px) to_vw(32px);
+      }
+    }
+  }
+}
+
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: to_vw(17px);
+  margin-top: to_vw(62px);
+
+  @include laptop {
+    gap: to_vw(13px);
+    margin-top: to_vw(55px);
+  }
+
+  @include mobile {
+    gap: to_vw(20px);
+    margin-top: to_vw(50px);
+  }
+
+  &__text {
+    @include text(700, 20px, 24px);
+    color: $white;
+    opacity: 60%;
+
+    @include laptop {
+      @include text(700, 16px, 19px);
+    }
+
+    @include mobile {
+      @include text(700, 14px, 17px);
+    }
+  }
+
+  &__link {
+    @include text(800, 20px, 24px);
+
+    @include laptop {
+      @include text(700, 16px, 19px);
+    }
+
+    @include mobile {
+      @include text(700, 14px, 17px);
+    }
+
+    text-decoration: none;
+    color: $yellow;
+    transition: opacity 0.3s ease-out;
+
+    &:hover {
+      opacity: 60%;
+    }
+  }
+}
+
+.footer {
+  height: to_vw(127px);
+  background: $black;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  @include laptop {
+    height: to_vw(127px);
+  }
+
+  @include mobile {
+    height: to_vw(127px);
+  }
+
+  &__img {
+    width: to_vw(100px);
+    height: to_vw(81px);
+
+    @include laptop {
+      width: to_vw(100px);
+      height: to_vw(81px);
+    }
+
+    @include mobile {
+      width: to_vw(100px);
+      height: to_vw(81px);
+    }
+  }
+
+  &__text {
+    @include text(800, 18px, 28px);
+    color: $yellow;
+
+    @include laptop {
+      @include text(800, 18px, 28px);
+    }
+
+    @include mobile {
+      @include text(800, 18px, 28px);
+    }
+  }
+}
